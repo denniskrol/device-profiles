@@ -1,0 +1,25 @@
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    target-branch: master
+    directory: /
+    schedule:
+      interval: weekly
+    assignees:
+      - denniskrol
+    groups:
+      github:
+        patterns:
+          - "*"
+
+  - package-ecosystem: npm
+    target-branch: master
+    directory: /
+    schedule:
+      interval: weekly
+    assignees:
+      - denniskrol
+    groups:
+      npm:
+        patterns:
+          - "*"

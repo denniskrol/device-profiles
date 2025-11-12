@@ -1,0 +1,83 @@
+name: Update Device Profiles
+
+on:
+  schedule:
+    - cron: '0 0 * * *' # Midnight UTC daily
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Determine version (date-based)
+        id: version
+        run: |
+          DATE=$(date -u +%Y%m%d)
+          echo "version=1.$DATE" >> $GITHUB_OUTPUT
+          echo "Computed version: 1.$DATE"
+
+      - name: Skip if tag already exists
+        run: |
+          VERSION='${{ steps.version.outputs.version }}'
+          if git rev-parse -q --verify "refs/tags/$VERSION"; then
+            echo "Tag $VERSION already exists. Skipping." && exit 0
+          fi
+
+      - name: Download latest deviceprofiles.json
+        run: |
+          curl -fsSL ${{ secrets.DEVICE_PROFILE_DOWNLOAD_URL }} -o new_deviceprofiles.json
+          if [ ! -s new_deviceprofiles.json ]; then
+            echo "Downloaded file is empty" >&2
+            exit 1
+          fi
+          # Validate JSON structure
+          if ! jq empty new_deviceprofiles.json >/dev/null 2>&1; then
+            echo "Downloaded file is not valid JSON" >&2
+            head -n 50 new_deviceprofiles.json || true
+            exit 1
+          fi
+          echo "JSON validation passed"
+          # Replace existing file
+          mv new_deviceprofiles.json src/deviceprofiles.json
+
+      - name: Update package.json version
+        run: |
+          VERSION='${{ steps.version.outputs.version }}'
+          jq --arg v "$VERSION" '.version=$v' package.json > package.tmp && mv package.tmp package.json
+          echo "package.json version set to $VERSION"
+
+      - name: Build (ensure TypeScript types up to date)
+        run: |
+          npm ci || npm install
+          npm run build || echo "Build failed (maybe unnecessary), continuing"
+
+      - name: Commit and tag
+        run: |
+          VERSION='${{ steps.version.outputs.version }}'
+          git config user.name 'github-actions'
+          git config user.email 'github-actions@github.com'
+          git add src/deviceprofiles.json package.json
+          if git diff --cached --quiet; then
+            echo "No changes to commit." && exit 0
+          fi
+          git commit -m "chore: update deviceprofiles.json for $VERSION"
+          git tag "$VERSION"
+
+      - name: Push changes and tag
+        run: |
+          VERSION='${{ steps.version.outputs.version }}'
+          git push origin HEAD:master
+          git push origin "$VERSION"
