@@ -32,8 +32,9 @@ jobs:
       - name: Skip if tag already exists
         run: |
           VERSION='${{ steps.version.outputs.version }}'
-          if git rev-parse -q --verify "refs/tags/$VERSION"; then
-            echo "Tag $VERSION already exists. Skipping." && exit 0
+          TAG="v$VERSION"
+          if git rev-parse -q --verify "refs/tags/$TAG"; then
+            echo "Tag $TAG already exists. Skipping." && exit 0
           fi
 
       - name: Download latest deviceprofiles.json
@@ -67,17 +68,19 @@ jobs:
       - name: Commit and tag
         run: |
           VERSION='${{ steps.version.outputs.version }}'
+          TAG="v$VERSION"
           git config user.name 'github-actions'
           git config user.email 'github-actions@github.com'
           git add src/deviceprofiles.json package.json
           if git diff --cached --quiet; then
             echo "No changes to commit." && exit 0
           fi
-          git commit -m "chore: update deviceprofiles.json for $VERSION"
-          git tag "$VERSION"
+          git commit -m "chore: update deviceprofiles.json for $TAG"
+          git tag "$TAG"
 
       - name: Push changes and tag
         run: |
           VERSION='${{ steps.version.outputs.version }}'
+          TAG="v$VERSION"
           git push origin HEAD:master
-          git push origin "$VERSION"
+          git push origin "$TAG"
