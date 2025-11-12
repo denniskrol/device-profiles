@@ -11,7 +11,7 @@ permissions:
   checks: write
 
 concurrency:
-  group: cicd-${{ github.ref }}
+  group: release-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
