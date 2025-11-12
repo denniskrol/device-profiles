@@ -1,0 +1,47 @@
+{
+  "name": "@denniskrol/device-profiles",
+  "version": "0.0.1",
+  "description": "Daily updated browser device profiles",
+  "keywords": [
+    "device-profiles",
+    "browser",
+    "user-agent"
+  ],
+  "homepage": "https://github.com/denniskrol/device-profiles#readme",
+  "bugs": {
+    "url": "https://github.com/denniskrol/device-profiles/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/denniskrol/device-profiles.git"
+  },
+  "license": "Unlicense",
+  "author": "Dennis Krol",
+  "type": "commonjs",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.js",
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./deviceprofiles.json": "./src/deviceprofiles.json"
+  },
+  "files": [
+    "dist",
+    "src/deviceprofiles.json"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "clean": "rimraf dist",
+    "prepare": "npm run build",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.25",
+    "rimraf": "^5.0.5",
+    "typescript": "^5.5.0",
+    "vitest": "^2.1.9"
+  }
+}
