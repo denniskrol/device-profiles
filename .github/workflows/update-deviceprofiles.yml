@@ -27,7 +27,7 @@ jobs:
         run: |
           DATE=$(date -u +%Y%m%d)
           echo "version=1.$DATE" >> $GITHUB_OUTPUT
-          echo "Computed version: 1.$DATE"
+          echo "Computed version: 1.$DATE.0"
 
       - name: Skip if tag already exists
         run: |
@@ -80,7 +80,5 @@ jobs:
 
       - name: Push changes and tag
         run: |
-          VERSION='${{ steps.version.outputs.version }}'
-          TAG="v$VERSION"
           git push origin HEAD:master
-          git push origin "$TAG"
+          git push origin --tags
