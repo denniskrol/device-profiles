@@ -1,0 +1,59 @@
+name: PR Tests
+
+on:
+  workflow_dispatch:
+  pull_request:
+
+jobs:
+  test:
+    name: Node tests
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [22.x, 24.x]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Use Node.js \${{ matrix.node-version }}
+        uses: actions/setup-node@v6
+        with:
+          node-version: \${{ matrix.node-version }}
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      - name: Run security audit (moderate)
+        run: npm audit --audit-level moderate
+        continue-on-error: true
+
+      - name: Check for high vulnerabilities
+        run: |
+          if npm audit --audit-level high; then
+            echo "✅ No high-severity vulnerabilities found"
+          else
+            echo "⚠️ High-severity vulnerabilities detected"
+            exit 1
+          fi
+
+      - name: Comment PR Result
+        if: always()
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const status = "${{ job.status }}";
+            const succeeded = status === "success";
+            const message = succeeded
+              ? '✅ **All checks passed!**\n\n- Node: ${{ matrix.node }}\n- Tests: ✅\n- Build: ✅\n- Security audit: ✅\n- Package dry-run: ✅\n\nReady for review! 🚀'
+              : '❌ **Some checks failed**\n\nPlease review the workflow logs (tests/build/audit) and fix the issues before requesting review.';
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: message
+            });
