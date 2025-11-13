@@ -2,7 +2,9 @@
 
 Daily updated browser/device profiles with weighted random selection. Useful for realistic client fingerprint spoofing, testing, load generation.
 
-Data comes from a website with about 65% mobile and 35% desktop traffic. Uses [browser-profiler](https://github.com/denniskrol/browser-profiler) to get data
+Data comes from a website with about 65% mobile and 35% desktop traffic, and uses [browser-profiler](https://github.com/denniskrol/browser-profiler) to get data.
+
+This is inspired by [intoli/user-agents](https://github.com/intoli/user-agents) which doesn't seem to get updated anymore and lacks some data that I needed.
 
 ## Install
 
@@ -121,7 +123,11 @@ const randomDesktop = DeviceProfiles.random({ deviceType: 'desktop' });
     "platform": "Windows",
     "platformVersion": "10.0.0",
     "uaFullVersion": "142.0.7444.134"
-  }
+  },
+  "weight":26,
+  "deviceType":"desktop",
+  "browser":"Chrome",
+  "osName":"Windows"
 }
 ```
 
