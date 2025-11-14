@@ -65,7 +65,7 @@ jobs:
           npm ci || npm install
           npm run build || echo "Build failed (maybe unnecessary), continuing"
 
-      - name: Commit and tag
+      - name: Commit, tag and push
         run: |
           VERSION='${{ steps.version.outputs.version }}'
           TAG="v$VERSION"
@@ -77,8 +77,5 @@ jobs:
           fi
           git commit -m "chore: update deviceprofiles.json for $TAG"
           git tag "$TAG"
-
-      - name: Push changes and tag
-        run: |
-          git push origin HEAD:master
-          git push origin --tags
+          git push https://x-access-token:${{ secrets.ACTIONS_PAT }}@github.com/denniskrol/device-profiles.git HEAD:master
+          git push https://x-access-token:${{ secrets.ACTIONS_PAT }}@github.com/denniskrol/device-profiles.git "$TAG"
