@@ -1,8 +1,14 @@
-name: Release new version
+name: Release New Version
 
 on:
   push:
-    tags: ["v*"]
+    tags:
+      - 'v*'
+  workflow_dispatch:
+  workflow_run:
+    workflows: ["Update Device Profiles"]
+    types:
+      - completed
 
 permissions:
   id-token: write
