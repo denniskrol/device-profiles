@@ -1,13 +1,7 @@
 name: Release New Version
 
 on:
-  push:
-    tags: ["v*"]
   workflow_dispatch:
-  workflow_run:
-    workflows: ["Update Device Profiles"]
-    types:
-      - completed
 
 permissions:
   id-token: write
@@ -20,35 +14,6 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
-    name: Build & Test (main)
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v5
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: "24"
-          cache: "npm"
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Run unit tests
-        run: npm test
-
-      - name: Build package
-        run: npm run build
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v5
-        with:
-          name: dist
-          path: dist/
-
   publish:
     name: Publish to npmjs & release
     runs-on: ubuntu-latest
