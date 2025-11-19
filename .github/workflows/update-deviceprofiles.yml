@@ -85,24 +85,7 @@ jobs:
             echo "No changes to commit." && exit 0
           fi
           git commit -m "chore: Update device profiles for $TAG"
-          git tag "$TAG"
           git push origin master
-          git push origin --tags
 
       - name: Publish to NPM
         run: npm publish
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        continue-on-error: true
-        with:
-          tag_name: v${{ steps.version.outputs.version }}
-          name: Release v${{ steps.version.outputs.version }}
-          body: |
-            ## Installation
-
-            ```bash
-            npm install @denniskrol/device-profiles@v${{ steps.version.outputs.version }}
-            ```
-          draft: false
-          prerelease: false
