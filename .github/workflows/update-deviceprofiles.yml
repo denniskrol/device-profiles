@@ -96,13 +96,13 @@ jobs:
         uses: softprops/action-gh-release@v2
         continue-on-error: true
         with:
-          tag_name: ${{ github.ref_name }}
-          name: Release ${{ github.ref_name }}
+          tag_name: v${{ steps.version.outputs.version }}
+          name: Release v${{ steps.version.outputs.version }}
           body: |
             ## Installation
 
             ```bash
-            npm install @denniskrol/device-profiles@${{ github.ref_name }}
+            npm install @denniskrol/device-profiles@v${{ steps.version.outputs.version }}
             ```
           draft: false
           prerelease: false
