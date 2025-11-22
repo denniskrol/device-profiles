@@ -33,6 +33,16 @@ const safari = new DeviceProfiles({ browser: /Safari/ });
 
 // Inclusion list (e.g. mobile OR tablet)
 const touch = new DeviceProfiles({ deviceType: ['mobile', 'tablet'] });
+
+// Function predicate (custom logic)
+const chromeWithUAData = new DeviceProfiles(profile =>
+  profile.userAgent.includes('Chrome') && !!profile.userAgentData
+);
+
+// Using static random with predicate
+const randomChrome = DeviceProfiles.random(profile =>
+  /Chrome/.test(profile.userAgent) && profile.deviceType === 'desktop'
+);
 ```
 
 ## Static Helpers
@@ -135,6 +145,7 @@ const randomDesktop = DeviceProfiles.random({ deviceType: 'desktop' });
 - Primitive equality (deviceType: `'mobile'`)
 - Inclusion list (deviceType: `['mobile','tablet']`)
 - RegExp match (browser: `/Safari/`)
+- Function predicate (profile => boolean) for full custom logic
 
 ## Weighted Selection
 Each profile has a weight. Random selection is proportional to weight.

@@ -34,6 +34,7 @@ export interface DeviceProfile {
 export type DeviceProfileFilter = Partial<Record<keyof DeviceProfile, any>> & {
   // Allow passing an inclusion list: { deviceType: ['mobile','tablet'] }
 };
+export type DeviceProfilePredicate = (profile: DeviceProfile) => boolean;
 
 const profiles: DeviceProfile[] = profilesData as DeviceProfile[];
 
@@ -50,6 +51,13 @@ function matchesFilter(profile: DeviceProfile, filter: DeviceProfileFilter): boo
     }
   }
   return true;
+}
+
+// Helper to unify object or predicate filtering
+function filterProfiles(input?: DeviceProfileFilter | DeviceProfilePredicate): DeviceProfile[] {
+  if (!input || (typeof input === 'object' && Object.keys(input).length === 0)) return profiles;
+  if (typeof input === 'function') return profiles.filter(p => input(p));
+  return profiles.filter(p => matchesFilter(p, input));
 }
 
 function pickWeightedRandom(items: DeviceProfile[]): DeviceProfile {
@@ -72,10 +80,8 @@ export class DeviceProfiles {
   userAgent: string; // required property exposed for convenience
   private _profile: DeviceProfile;
 
-  constructor(filter: DeviceProfileFilter = {}) {
-    const filtered = Object.keys(filter).length
-      ? profiles.filter(p => matchesFilter(p, filter))
-      : profiles;
+  constructor(filter: DeviceProfileFilter | DeviceProfilePredicate = {}) {
+    const filtered = filterProfiles(filter);
     this._profile = pickWeightedRandom(filtered);
     this.userAgent = this._profile.userAgent; // explicit assignment
     Object.assign(this, this._profile);
@@ -85,10 +91,12 @@ export class DeviceProfiles {
     return [...profiles];
   }
 
-  static random(filter: DeviceProfileFilter = {}): DeviceProfile {
-    const filtered = Object.keys(filter).length
-      ? profiles.filter(p => matchesFilter(p, filter))
-      : profiles;
+  // Overloads for better TS inference (optional, runtime uses single impl)
+  static random(): DeviceProfile;
+  static random(filter: DeviceProfileFilter): DeviceProfile;
+  static random(predicate: DeviceProfilePredicate): DeviceProfile;
+  static random(filter: DeviceProfileFilter | DeviceProfilePredicate = {}): DeviceProfile {
+    const filtered = filterProfiles(filter);
     return pickWeightedRandom(filtered);
   }
 

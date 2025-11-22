@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { DeviceProfiles } from './../src/index';
+import { DeviceProfiles } from '../src';
 
 describe('DeviceProfiles', () => {
   it('returns a profile instance with properties', () => {
