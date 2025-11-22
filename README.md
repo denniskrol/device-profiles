@@ -15,7 +15,7 @@ npm install @denniskrol/device-profiles
 ## Basic Usage
 
 ```ts
-import DeviceProfiles from '@denniskrol/device-profiles';
+import { DeviceProfiles } from '@denniskrol/device-profiles';
 
 // Get a weighted random profile
 const profile = new DeviceProfiles();
