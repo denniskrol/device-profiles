@@ -1,5 +1,10 @@
 # Device Profiles
 
+[![npm](https://img.shields.io/npm/v/@denniskrol/device-profiles.svg)](https://www.npmjs.com/package/@denniskrol/device-profiles)
+[![downloads](https://img.shields.io/npm/dm/@denniskrol/device-profiles.svg)](https://www.npmjs.com/package/@denniskrol/device-profiles)
+[![license](https://img.shields.io/npm/l/@denniskrol/device-profiles.svg)](./LICENSE)
+[![node](https://img.shields.io/node/v/@denniskrol/device-profiles.svg)](./package.json)
+
 Daily updated browser/device profiles with weighted random selection. Useful for realistic client fingerprint spoofing, testing, load generation.
 
 Data comes from a website with about 65% mobile and 35% desktop traffic, and uses [browser-profiler](https://github.com/denniskrol/browser-profiler) to get data.

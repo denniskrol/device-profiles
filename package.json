@@ -38,6 +38,9 @@
     "prepare": "npm run build",
     "test": "vitest run"
   },
+  "engines": {
+    "node": ">=18"
+  },
   "devDependencies": {
     "@types/node": "^25.0.3",
     "rimraf": "^6.1.0",
