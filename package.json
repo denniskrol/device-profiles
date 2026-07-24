@@ -42,9 +42,9 @@
     "node": ">=18"
   },
   "devDependencies": {
-    "@types/node": "^25.0.3",
+    "@types/node": "^26.1.1",
     "rimraf": "^6.1.0",
-    "typescript": "^5.5.0",
+    "typescript": "^7.0.2",
     "vitest": "^4.0.8"
   }
 }
